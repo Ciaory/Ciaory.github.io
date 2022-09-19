@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>前端概念介绍 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="web概念介绍
+
+
+JavaWeb
+
+使用Java语言开发基于互联网的项目
+
+
+
+软件架构
+
+C/S：Client/Server 客户端/服务器端
+
+在用户本地有一个客户端程序，远程有一个服务器端程序
+如：QQ、迅雷
+优点：用户体验好
+缺点..." />
+    <meta name="keywords" content="Java EE" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">前端概念介绍</h2>
+            <div class="post-date">2022-09-13</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="web概念介绍">web概念介绍</h1>
+<ul>
+<li>
+<p>JavaWeb</p>
+<ul>
+<li>使用Java语言开发基于互联网的项目</li>
+</ul>
+</li>
+<li>
+<p>软件架构</p>
+<ol>
+<li>C/S：Client/Server 客户端/服务器端
+<ul>
+<li>在用户本地有一个客户端程序，远程有一个服务器端程序</li>
+<li>如：QQ、迅雷</li>
+<li>优点：用户体验好</li>
+<li>缺点：开发、安装、部署、维护 麻烦</li>
+</ul>
+</li>
+<li>B/S:   Brower/Server 浏览器/服务器端
+<ul>
+<li>只需要一个浏览器，用户通过URL来访问不同服务器端程序</li>
+<li>优点：开发、安装、部署、维护 麻烦</li>
+<li>缺点：<br>
+1. 若应用过大、用户体验收到影响<br>
+2. 对硬件要求高</li>
+</ul>
+</li>
+</ol>
+<h1 id="bs架构详解">B/S架构详解</h1>
+<ul>
+<li>资源分类</li>
+</ul>
+<ol>
+<li>静态资源：
+<ul>
+<li>使用静态网页开发技术发布的资源</li>
+<li>特点：
+<ul>
+<li>所有用户访问得到的结果是相同的</li>
+<li>如：文本，图片、音频、视频，html，CSS，JavaScript</li>
+<li>如果用户请求的是静态资源，娜美服务器会直接将静态资源发送给浏览器。浏览器中内置了静态资源的解析引擎，可以展示静态资源</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>动态资源
+<ul>
+<li>使用动态网页及时发布的资源</li>
+<li>特点：
+<ul>
+<li>所有用户访问，结果可能不一样</li>
+<li>如：jsp/servlet，php，asp...</li>
+<li>如果用户请求的是动态资源，服务器会执行动态资源，转换为静态资源，再发送给浏览器。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="静态资源">静态资源：</h2>
+<pre><code>  * html：用于搭建基础页面，展示页面内容
+  * CSS：用于美化页面，布局页面
+  * Javascript：控制页面的元素，让页面有一些动态的效果
+</code></pre>
+</li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Ciaory.github.io/tag/07ruRnePR/" class="tag">
+                    Java EE
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Ciaory.github.io/post/html-yu-fa/">
+                  <h3 class="post-title">
+                    html基础语法
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

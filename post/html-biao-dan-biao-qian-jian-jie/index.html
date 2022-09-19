@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>html表单标签简介 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="表单
+
+概念：用于采集用户输入的数据，用于和服务器进行交互
+使用的标签：form
+可以定义一个范围，范围代表采集用户数据采集的范围
+
+属性
+
+action: 指定提交数据的URL&lt;form action=&quot;#&quot; &..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">html表单标签简介</h2>
+            <div class="post-date">2022-09-14</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="表单">表单</h2>
+<ul>
+<li>概念：用于采集用户输入的数据，用于和服务器进行交互</li>
+<li>使用的标签：form</li>
+<li>可以定义一个范围，范围代表采集用户数据采集的范围</li>
+</ul>
+<h2 id="属性">属性</h2>
+<ul>
+<li>action: 指定提交数据的URL<code>&lt;form action=&quot;#&quot; &gt;</code></li>
+<li>method:指定提交方式
+<ul>
+<li>分类：一共7种，2种比较常用
+<ul>
+<li>get：
+<ul>
+<li>请求参数会在地址栏中显示</li>
+<li>请求参数的大小有限制</li>
+<li>不太安全</li>
+</ul>
+</li>
+<li>post：
+<ul>
+<li>请求参数不会在地址栏中显示，会封装在请求体中（HTTP协议）</li>
+<li>请求参数大小没有限制</li>
+<li>较为安全</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>表单项中的数据项要被提交：必须<strong>指定其name属性</strong><pre><code>&lt;form action=&quot;#&quot; method=&quot;get&quot;&gt; 
+          &lt;label for=&quot;username&quot;&gt;用户名 &lt;/label&gt;  &lt;input name = &quot;username&quot; placeholder=&quot;请输入用户名&quot; id=&quot;username&quot;&gt;&lt;br&gt;
+          密码&lt;input name=&quot;password&quot;&gt;&lt;br&gt;
+          &lt;input type = &quot;submit&quot; value=&quot;登录&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<h2 id="表单项标签">表单项标签</h2>
+<ul>
+<li>input：可以通过type属性值，改变元素展示的样式</li>
+<li>select：下拉列表</li>
+<li>textarea：文本域</li>
+</ul>
+<h3 id="input">input</h3>
+<ul>
+<li>type属性：
+<ul>
+<li>text：文本输入框（default）</li>
+<li>password：密码框</li>
+<li>radio：单选框
+<ol>
+<li>注意：要想多个单选框实现单选的效果，则多个单选框的name的属性值必须一样</li>
+<li>一般会给每一个单选框value属性，指定其被选中后提交的值</li>
+<li>checked 属性，可以指定默认值</li>
+<li>placeholder 属性，指定输入框的提示信息，当输入输入内容发生变化，提示消失</li>
+</ol>
+<pre><code>&lt;!-- &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;male&quot;&gt; 男 --&gt;
+&lt;!-- &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;female&quot;&gt; 女 --&gt;
+</code></pre>
+</li>
+<li>checkbox：复选框
+<ol>
+<li>一般会给每一个单选框value属性，指定其被选中后提交的值</li>
+<li>checked 属性，可以指定默认值</li>
+</ol>
+</li>
+<li>file ： 文件选择框</li>
+<li>hidden：隐藏域，用于提交一些信息<code>&lt;input type=&quot;hidden&quot; name=&quot;file&quot; value=&quot;aaa&quot;&gt;&lt;br&gt;</code></li>
+<li>按钮：
+<ul>
+<li>submit：提交表单</li>
+<li>button：普通按钮</li>
+<li>img 图片提交按钮
+<ul>
+<li>src 属性指定图片资源</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>label：指定输入项的文字描述信息<br>
+* 注意：<br>
+* label 的 for 属性一般会和 input 的 id 属性值对应。如果对应了，则点击label 区域网， 会让label 输入框获取焦点</li>
+</ul>
+<h3 id="select下拉列表">select：下拉列表</h3>
+<ul>
+<li>子元素：option，指定列表项</li>
+</ul>
+<pre><code> &lt;select name=&quot;province&quot;&gt;
+     &lt;caption value=&quot;1&quot;&gt;shanghai&lt;/caption&gt;
+     &lt;caption value=&quot;2&quot; selected&gt;beijing&lt;/caption&gt;
+ &lt;/select&gt;
+ &lt;!-- 添加 name 属性用于提交 form --&gt;
+</code></pre>
+<p>###textarea：文本域</p>
+<ul>
+<li>cols ：指定列数</li>
+<li>rows：指定行数</li>
+<li>示例： <code>&lt;textarea cols=&quot;5&quot; rows=&quot;20&quot;&gt;&lt;/textarea&gt;</code></li>
+</ul>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Ciaory.github.io/post/qian-duan-gai-nian-jie-shao/">
+                  <h3 class="post-title">
+                    前端概念介绍
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

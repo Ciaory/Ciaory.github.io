@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>JavaScript入门 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="JavaScript：
+概念： 一门客户端脚本语言
+* 运行在客户端浏览器的。每一个浏览器都有JavaScript的解析引擎
+* 脚本语言：不需要编译，直接就可以被浏览器解析执行了
+
+功能
+
+可以来增强用户和html页面的交互过程，可以来控..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">JavaScript入门</h2>
+            <div class="post-date">2022-09-18</div>
+            
+            <div class="post-content" v-pre>
+              <h1 id="javascript">JavaScript：</h1>
+<h2 id="概念-一门客户端脚本语言">概念： 一门客户端脚本语言</h2>
+<pre><code>* 运行在客户端浏览器的。每一个浏览器都有JavaScript的解析引擎
+* 脚本语言：不需要编译，直接就可以被浏览器解析执行了
+</code></pre>
+<h2 id="功能">功能</h2>
+<ul>
+<li>可以来增强用户和html页面的交互过程，可以来控制html元素，让页面有一些动态效果，增强用户的体验</li>
+</ul>
+<h2 id="javascript发展史">JavaScript发展史：</h2>
+<ol>
+<li>1992年，Nombase公司，开发出全球第一门客户端脚本语言，专门用户表单的校验，命名为：C--，更名为ScriptEase</li>
+<li>1995年，Netscape（网景）公司，开发了一门客户端脚本语言：LiveScript。后来请来的Sun公司的专家，修改LIveScript，命名为JavaScript。</li>
+<li>1996年，微软抄袭JavaScript开发出JScript语言。</li>
+<li>1997年，ECMA（欧洲计算机制造商协会），ECMAScript，就是所有客户端脚本语言的标准。</li>
+</ol>
+<blockquote>
+<p>JavaScript = ECMAScript + JavaScript自己特有的东西（BOM + DOM）</p>
+</blockquote>
+<h2 id="ecmascript客户端脚本语言的标准">ECMAScript：客户端脚本语言的标准</h2>
+<h3 id="基本语法">基本语法</h3>
+<ol>
+<li>与HTML结合方式
+<ul>
+<li>内部JS：<br>
+*    定义【script】,标签体内就是JS代码</li>
+<li>外部JS：<br>
+*    定义【script】,通过src属性引入外部的JS文件</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>注意：script可以定义在html的任何位置。但是位置会影响执行顺序<br>
+script可以定义多个</p>
+</blockquote>
+<ol start="2">
+<li>数据类型
+<ol>
+<li>原始数据类型（基本数据类型）：
+<ol>
+<li>number：数字。整数、小数、NaN(not a number)</li>
+<li>string：字符串。字符串“abc”“a”‘abc’</li>
+<li>boolean：true false</li>
+<li>null:一个对象为空的占位符</li>
+<li>undefined：未定义。如果一个变量没有给初始化值，则会被默认赋值为undefined</li>
+</ol>
+</li>
+<li>引用数据类型：对象</li>
+</ol>
+</li>
+<li>变量
+<ol>
+<li>变量：一小块存储数据的内存空间</li>
+<li>Java语言是强类型语言，而JavaScript为弱类型语言。
+<ol>
+<li>强类型：在开辟存储空间时，定义了空间将来的数据的数据类型，只能存储固定的数据类型</li>
+<li>弱类型：在开辟存储空间时，不定义空间将来的存储数据类型，可以存取任意类型的数据</li>
+</ol>
+</li>
+<li>语法：
+<ol>
+<li>var 变量名 = 初始化值；</li>
+</ol>
+</li>
+<li>typeof运算法：获取变量类型
+<ol>
+<li>注：null的类型会返回object</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>运算符
+<ol>
+<li>一元</li>
+<li>算数</li>
+<li>赋值</li>
+<li>比较</li>
+<li>逻辑</li>
+<li>三元</li>
+</ol>
+</li>
+<li>流程控制语句</li>
+</ol>
+<h3 id="基本对象">基本对象</h3>
+<h4 id="function-函数对象">Function: 函数对象</h4>
+<ol>
+<li>创建
+<ol>
+<li><code>var fun = new Function（形式阐述列表，方法体）</code></li>
+<li><code>function 方法名称  function fun(a, b, c){...}</code></li>
+<li><code>var 方法名 = function（形式参数列表）{方法体}</code></li>
+</ol>
+</li>
+<li>方法</li>
+<li>属性
+<ol>
+<li>fun.length:形参的数量</li>
+</ol>
+</li>
+<li>特点
+<ol>
+<li>定义方法是：形参类型不用写，返回值类型也可以不写</li>
+<li>方法是一个对象。如果多次赋值，会覆盖上次的函数</li>
+<li>在JS中，方法的调用置于方法的名称有关，和参数列表无关</li>
+<li>在方法声明中有一个隐藏的内置对象（数组），arguments，封装所有的实际参数</li>
+</ol>
+<blockquote>
+<p>function sum() // 不加参数，表示参数数量任意</p>
+</blockquote>
+</li>
+<li>调用
+<ol>
+<li>方法名字（实际参数列表）</li>
+</ol>
+</li>
+</ol>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Ciaory.github.io/post/css-ru-men/">
+                  <h3 class="post-title">
+                    CSS入门
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

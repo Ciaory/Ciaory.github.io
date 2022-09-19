@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>html基础语法 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="概念
+
+超文本标记语言
+
+超文本
+
+超文本是用超链接的方法，将各种不同空间的文字信息组织在一起的网状文本
+
+
+标记语言
+
+标记语言不是编程语言
+由标签构成的语言。&lt;标签名称&gt;如 html，xml
+
+
+
+语法
+
+html文档后缀名..." />
+    <meta name="keywords" content="Java EE" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">html基础语法</h2>
+            <div class="post-date">2022-09-13</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="概念">概念</h2>
+<ul>
+<li>超文本标记语言
+<ul>
+<li>超文本
+<ul>
+<li>超文本是用超链接的方法，将各种不同空间的文字信息组织在一起的网状文本</li>
+</ul>
+</li>
+<li>标记语言
+<ul>
+<li>标记语言不是编程语言</li>
+<li>由标签构成的语言。&lt;标签名称&gt;如 html，xml</li>
+</ul>
+</li>
+</ul>
+<h2 id="语法">语法</h2>
+<ul>
+<li>html文档后缀名.html 或者 .htm</li>
+<li>标签分为
+<ol>
+<li>围堵标签：有开始标签和结束标签。如<html></html></li>
+<li>自闭合标签：<br/></li>
+</ol>
+</li>
+<li>在开始标签中可以定义属性。属性是由键值对构成，值需要引号（单双皆可）引起来</li>
+<li>html不区分大小写，但推荐小写。</li>
+</ul>
+<h2 id="标签">标签</h2>
+</li>
+</ul>
+<h3 id="1-文件标签构成html最基本的标签">1. 文件标签：构成html最基本的标签</h3>
+<pre><code>    * html：html的根标签
+    * head：头标签，引入资源
+    * title：标题标签
+    * body： 体标签
+</code></pre>
+<h3 id="2-文本标签和文本有关的标签">2. 文本标签：和文本有关的标签</h3>
+<pre><code>    * 注释`&lt;!--blah--&gt;`
+    * h1 to h6 标题
+    * p 段落
+    * br 换行
+    * hr 水平线
+        * 属性
+            * color
+            * width
+            * size
+            * align
+                * center
+                * left
+                * right
+    * b 加粗
+    * i 斜体
+    * font 字体（html5已淘汰）
+        * 属性
+            * color 颜色
+                1. 英文单词：red，green，blue
+                2. rgb(a,b,c) 
+                3. #abc: $a,b,c \in 0x00 to 0xFF$
+            * size 大小
+            * face 字体
+            * width:
+                * 数值：width=‘20’，数值单位默认是px（像素）
+                * 数值%：占比相对于父元素的大小
+</code></pre>
+<h3 id="3-图片标签">3. 图片标签：</h3>
+<pre><code>&lt;img src = &quot;image/jingxuan_2.jpg&quot; align = &quot;right&quot; alt = &quot;alternative&quot; /&gt;
+</code></pre>
+<ul>
+<li>src: 指定图片位置
+<ul>
+<li>以.开头的路径
+<ul>
+<li>./: 表示当前目录</li>
+<li>../: 表示上一级目录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-列表标签">4. 列表标签：</h3>
+<pre><code>1. ol+li
+2. ul+li
+</code></pre>
+<h3 id="5-连接标签">5. 连接标签：</h3>
+<pre><code>1. a: 定义一个超链接
+    1. 属性：
+        1. href：制定访问资源的URL
+        2. target：制定打开资源的方式
+            1. _self:默认值,在当前页面打开
+            2. _blank:在空白页面打开
+</code></pre>
+<h3 id="6-div和span">6. div和span：</h3>
+<ul>
+<li>span：文本信息在一行内展示，行内标签 内联标签</li>
+<li>div：每个div占满一整行。块级标签</li>
+</ul>
+<h3 id="7-语义化标签-为了提高程序可读性提供了一些标签自身没有任何形式结合css">7. 语义化标签： 为了提高程序可读性，提供了一些标签（自身没有任何形式,结合CSS）</h3>
+<pre><code>1. header
+2. footer 
+</code></pre>
+<h3 id="8-表格标签">8. 表格标签：</h3>
+<pre><code>* table: 定义表格
+    * width： 宽度
+    * border：边框
+    * cellpadding：定义内容和单元格之间的距离
+    * cellspacing: 定义单元格之间的距离。若指定为0，则边框合为一条线
+    * align： 对齐方式
+* tr：行
+* td：列
+    * colspan: 合并列 `&lt;th rowspan=&quot;2&quot;&gt;`
+    * rowspan: 合并行
+* th：表头单元格
+* caption: 标题 
+* thead: 表示表格的头部分
+* tbody: 表示表格的体部分
+* tfoot: 表示表格的尾部分
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Ciaory.github.io/tag/07ruRnePR/" class="tag">
+                    Java EE
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Ciaory.github.io/post/java-ee-fa-zhan-yu-zu-cheng/">
+                  <h3 class="post-title">
+                    Java EE发展与组成
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

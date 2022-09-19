@@ -1,0 +1,790 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://Ciaory.github.io</id>
+    <title>Ciaory&apos;s blog</title>
+    <updated>2022-09-19T10:16:47.347Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://Ciaory.github.io"/>
+    <link rel="self" href="https://Ciaory.github.io/atom.xml"/>
+    <subtitle>温故而知新</subtitle>
+    <logo>https://Ciaory.github.io/images/avatar.png</logo>
+    <icon>https://Ciaory.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2022, Ciaory&apos;s blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Socket编程（转载）]]></title>
+        <id>https://Ciaory.github.io/post/socket-bian-cheng-zhuan-zai/</id>
+        <link href="https://Ciaory.github.io/post/socket-bian-cheng-zhuan-zai/">
+        </link>
+        <updated>2022-09-19T09:21:22.000Z</updated>
+        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://Ciaory.github.io/post-images/1663579429316.png" alt="" loading="lazy"></figure>
+<h1 id="socket概念">socket概念</h1>
+<p>操作系统提供给程序员操作<strong>网络协议栈的接口</strong>，也就是通过socket的接口来控制协议栈工作，从而实现网络通信，达到跨主机通信。</p>
+<p>协议栈的上半部分有两块，分别是负责收发数据的 TCP 和 UDP 协议，它们两会接受应用层的委托执行收发数据的操作。</p>
+<p>协议栈的下面一半是用 IP 协议控制网络包收发操作，在互联网上传数据时，数据会被切分成一块块的网络包，而将网络包发送给对方的操作就是由 IP 负责的。</p>
+<p>此外 IP 中还包括 ICMP 协议和 ARP 协议。</p>
+<ul>
+<li><code>ICMP</code>用于告知网络包传送过程中产生的错误以及各种控制信息。</li>
+<li><code>ARP</code> 用于根据IP地址查询相应以太网MAC地址</li>
+</ul>
+<p>IP下面的网卡驱动程序负责控制网卡硬件，而最下面的网卡则负责完成实际的收发操作，也就是对网线中的信号执行发送和接收操作。</p>
+<p>那具体 socket 有哪些接口呢？</p>
+<p>socket 一般分为 <strong>TCP 网络编程</strong>和** UDP 网络编程**。</p>
+<p>#TCP网络编程<br>
+先来看看 TCP 网络编程，一幅图就很好理解。<br>
+<img src="https://Ciaory.github.io/post-images/1663580128407.png" alt="" loading="lazy"></p>
+<ul>
+<li>服务端和客户端初始化 socket，得到文件描述符；</li>
+<li>服务端调用 bind，将绑定在 IP 地址和端口;</li>
+<li>服务端调用 listen，进行监听；服务端调用 accept，等待客户端连接；</li>
+<li>客户端调用 connect，向服务器端的地址和端口发起连接请求；</li>
+<li>服务端 accept 返回用于传输的 socket 的文件描述符；</li>
+<li>客户端调用 write 写入数据；服务端调用 read 读取数据；</li>
+<li>客户端断开连接时，会调用 close，那么服务端 read 读取数据的时候，就会读取到了 EOF，待处理完数据后，服务端调用 close，表示连接关闭。</li>
+</ul>
+<p>这里需要注意的是，服务端调用 accept 时，连接成功了会返回一个已完成连接的 socket，后续用来传输数据。</p>
+<p>所以，监听的 socket 和真正用来传送数据的 socket，是「两个」 socket，一个叫作<strong>监听 socket</strong>，一个叫作<strong>已完成连接 socket</strong>。</p>
+<p>成功连接建立之后，双方开始通过 read 和 write 函数来读写数据，就像往一个文件流里面写东西一样。</p>
+<p>#结合三次握手连接的 TCP socket<br>
+<img src="https://Ciaory.github.io/post-images/1663580835509.png" alt="" loading="lazy"><br>
+##客户端连接服务端</p>
+<ul>
+<li>客户端的协议栈向服务器端发送了 SYN 包，并告诉服务器端当前发送序列号 client_isn，客户端进入 <code>SYN_SENT</code>状态；</li>
+<li>服务器端的协议栈收到这个包之后，和客户端进行 ACK 应答，应答的值为 client_isn+1，表示对 SYN 包 client_isn 的确认，同时服务器也发送一个 SYN 包，告诉客户端当前我的发送序列号为 server_isn，服务器端进入<code> SYN_RCVD</code> 状态；</li>
+<li>客户端协议栈收到 ACK 之后，使得应用程序从<code>connect</code>调用返回，表示客户端到服务器端的单向连接建立成功，客户端的状态为<code> ESTABLISHED</code>，同时客户端协议栈也会对服务器端的 SYN 包进行应答，应答数据为 server_isn+1；</li>
+<li>应答包到达服务器端后，服务器端协议栈使得<code> accept</code> 阻塞调用返回，这个时候服务器端到客户端的单向连接也建立成功，服务器端也进入 ESTABLISHED 状态。</li>
+</ul>
+<p>#结合四次次挥手的 TCP socket<br>
+<img src="https://Ciaory.github.io/post-images/1663581460901.jpg" alt="" loading="lazy"></p>
+<h2 id="客户端调用-close-过程">客户端调用 close 过程</h2>
+<ul>
+<li>客户端调用 close，表明客户端没有数据需要发送了，则此时会向服务端发送 FIN 报文，进入 FIN_WAIT_1 状态；</li>
+<li>服务端接收到了 FIN 报文，TCP 协议栈会为 FIN 包插入一个文件结束符 EOF 到接收缓冲区中，应用程序可以通过 read 调用来感知这个 FIN 包。这个 EOF 会被放在<strong>已排队等候的其他已接收的数据之后</strong>，这就意味着服务端需要处理这种异常情况，因为 EOF 表示在该连接上再无额外数据到达。此时，服务端进入 <code>CLOSE_WAIT</code> 状态；</li>
+<li>接着，当处理完数据后，自然就会读到 EOF，于是也调用 close 关闭它的套接字，这会使得客户端会发出一个 FIN 包，之后处于<code> LAST_ACK</code> 状态；</li>
+<li>客户端接收到服务端的 FIN 包，并发送 ACK 确认包给服务端，此时客户端将进入<code> TIME_WAIT</code> 状态；</li>
+<li>服务端收到 ACK 确认包后，就进入了最后的 CLOSE 状态；客户端经过 2MSL 时间之后，也进入 CLOSE 状态；</li>
+</ul>
+<p>链接：https://www.zhihu.com/question/29637351/answer/1934423848</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Socket编程]]></title>
+        <id>https://Ciaory.github.io/post/socket-bian-cheng/</id>
+        <link href="https://Ciaory.github.io/post/socket-bian-cheng/">
+        </link>
+        <updated>2022-09-19T09:21:22.000Z</updated>
+        <content type="html"><![CDATA[<figure data-type="image" tabindex="1"><img src="https://Ciaory.github.io/post-images/1663579429316.png" alt="" loading="lazy"></figure>
+<h1 id="socket概念">socket概念</h1>
+<p>操作系统提供给程序员操作<strong>网络协议栈的接口</strong>，也就是通过socket的接口来控制协议栈工作，从而实现网络通信，达到跨主机通信。</p>
+<p>协议栈的上半部分有两块，分别是负责收发数据的 TCP 和 UDP 协议，它们两会接受应用层的委托执行收发数据的操作。</p>
+<p>协议栈的下面一半是用 IP 协议控制网络包收发操作，在互联网上传数据时，数据会被切分成一块块的网络包，而将网络包发送给对方的操作就是由 IP 负责的。</p>
+<p>此外 IP 中还包括 ICMP 协议和 ARP 协议。</p>
+<ul>
+<li><code>ICMP</code>用于告知网络包传送过程中产生的错误以及各种控制信息。</li>
+<li><code>ARP</code> 用于根据IP地址查询相应以太网MAC地址</li>
+</ul>
+<p>IP下面的网卡驱动程序负责控制网卡硬件，而最下面的网卡则负责完成实际的收发操作，也就是对网线中的信号执行发送和接收操作。</p>
+<p>那具体 socket 有哪些接口呢？</p>
+<p>socket 一般分为 <strong>TCP 网络编程</strong>和** UDP 网络编程**。</p>
+<p>#TCP网络编程<br>
+<img src="https://Ciaory.github.io/post-images/1663580128407.png" alt="" loading="lazy"></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[JavaScript入门]]></title>
+        <id>https://Ciaory.github.io/post/javascript-ru-men/</id>
+        <link href="https://Ciaory.github.io/post/javascript-ru-men/">
+        </link>
+        <updated>2022-09-18T11:05:58.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="javascript">JavaScript：</h1>
+<h2 id="概念-一门客户端脚本语言">概念： 一门客户端脚本语言</h2>
+<pre><code>* 运行在客户端浏览器的。每一个浏览器都有JavaScript的解析引擎
+* 脚本语言：不需要编译，直接就可以被浏览器解析执行了
+</code></pre>
+<h2 id="功能">功能</h2>
+<ul>
+<li>可以来增强用户和html页面的交互过程，可以来控制html元素，让页面有一些动态效果，增强用户的体验</li>
+</ul>
+<h2 id="javascript发展史">JavaScript发展史：</h2>
+<ol>
+<li>1992年，Nombase公司，开发出全球第一门客户端脚本语言，专门用户表单的校验，命名为：C--，更名为ScriptEase</li>
+<li>1995年，Netscape（网景）公司，开发了一门客户端脚本语言：LiveScript。后来请来的Sun公司的专家，修改LIveScript，命名为JavaScript。</li>
+<li>1996年，微软抄袭JavaScript开发出JScript语言。</li>
+<li>1997年，ECMA（欧洲计算机制造商协会），ECMAScript，就是所有客户端脚本语言的标准。</li>
+</ol>
+<blockquote>
+<p>JavaScript = ECMAScript + JavaScript自己特有的东西（BOM + DOM）</p>
+</blockquote>
+<h2 id="ecmascript客户端脚本语言的标准">ECMAScript：客户端脚本语言的标准</h2>
+<h3 id="基本语法">基本语法</h3>
+<ol>
+<li>与HTML结合方式
+<ul>
+<li>内部JS：<br>
+*    定义【script】,标签体内就是JS代码</li>
+<li>外部JS：<br>
+*    定义【script】,通过src属性引入外部的JS文件</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>注意：script可以定义在html的任何位置。但是位置会影响执行顺序<br>
+script可以定义多个</p>
+</blockquote>
+<ol start="2">
+<li>数据类型
+<ol>
+<li>原始数据类型（基本数据类型）：
+<ol>
+<li>number：数字。整数、小数、NaN(not a number)</li>
+<li>string：字符串。字符串“abc”“a”‘abc’</li>
+<li>boolean：true false</li>
+<li>null:一个对象为空的占位符</li>
+<li>undefined：未定义。如果一个变量没有给初始化值，则会被默认赋值为undefined</li>
+</ol>
+</li>
+<li>引用数据类型：对象</li>
+</ol>
+</li>
+<li>变量
+<ol>
+<li>变量：一小块存储数据的内存空间</li>
+<li>Java语言是强类型语言，而JavaScript为弱类型语言。
+<ol>
+<li>强类型：在开辟存储空间时，定义了空间将来的数据的数据类型，只能存储固定的数据类型</li>
+<li>弱类型：在开辟存储空间时，不定义空间将来的存储数据类型，可以存取任意类型的数据</li>
+</ol>
+</li>
+<li>语法：
+<ol>
+<li>var 变量名 = 初始化值；</li>
+</ol>
+</li>
+<li>typeof运算法：获取变量类型
+<ol>
+<li>注：null的类型会返回object</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>运算符
+<ol>
+<li>一元</li>
+<li>算数</li>
+<li>赋值</li>
+<li>比较</li>
+<li>逻辑</li>
+<li>三元</li>
+</ol>
+</li>
+<li>流程控制语句</li>
+</ol>
+<h3 id="基本对象">基本对象</h3>
+<h4 id="function-函数对象">Function: 函数对象</h4>
+<ol>
+<li>创建
+<ol>
+<li><code>var fun = new Function（形式阐述列表，方法体）</code></li>
+<li><code>function 方法名称  function fun(a, b, c){...}</code></li>
+<li><code>var 方法名 = function（形式参数列表）{方法体}</code></li>
+</ol>
+</li>
+<li>方法</li>
+<li>属性
+<ol>
+<li>fun.length:形参的数量</li>
+</ol>
+</li>
+<li>特点
+<ol>
+<li>定义方法是：形参类型不用写，返回值类型也可以不写</li>
+<li>方法是一个对象。如果多次赋值，会覆盖上次的函数</li>
+<li>在JS中，方法的调用置于方法的名称有关，和参数列表无关</li>
+<li>在方法声明中有一个隐藏的内置对象（数组），arguments，封装所有的实际参数</li>
+</ol>
+<blockquote>
+<p>function sum() // 不加参数，表示参数数量任意</p>
+</blockquote>
+</li>
+<li>调用
+<ol>
+<li>方法名字（实际参数列表）</li>
+</ol>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[CSS入门]]></title>
+        <id>https://Ciaory.github.io/post/css-ru-men/</id>
+        <link href="https://Ciaory.github.io/post/css-ru-men/">
+        </link>
+        <updated>2022-09-15T13:20:53.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="概念cascading-style-sheet-层叠样式表">概念：Cascading Style Sheet 层叠样式表</h2>
+<ul>
+<li>层叠：多个样式可以作用在同一个html的元素上，同时生效</li>
+</ul>
+<h2 id="好处">好处</h2>
+<ol>
+<li>功能强大</li>
+<li>将内容展示和样式控制分离
+<ul>
+<li>降低耦合度，解耦</li>
+<li>让分工协作更容易</li>
+<li>提高开发效率</li>
+</ul>
+</li>
+</ol>
+<h2 id="css-与-html">CSS 与 HTML</h2>
+<ol>
+<li>内联样式
+<ul>
+<li>在标签内使用style属性指定css代码<br>
+* 如**[div style=&quot;color:red;&quot;]hello css[/div]**</li>
+</ul>
+</li>
+<li>内部样式
+<ul>
+<li>在head标签内定义style标签，style标签的标签体的内容就是css代码</li>
+<li>如：</li>
+</ul>
+</li>
+</ol>
+<pre><code>&lt;style&gt;
+          div{
+              color:blue;
+          }
+  &lt;style&gt;
+</code></pre>
+<ol start="3">
+<li>外部样式
+<ol>
+<li>定义css文件</li>
+<li>在<strong>head</strong>标签里定义<strong>link</strong>标签，引入外部资源</li>
+<li><strong>[link rel=&quot;stylesheet&quot; href=&quot;css/a.css&quot;]</strong></li>
+</ol>
+</li>
+</ol>
+<ul>
+<li>注意：
+<ul>
+<li>1,2,3种方式作用域越来越大</li>
+<li>1不常用，后期常用2,3</li>
+</ul>
+<h2 id="css基本语法">CSS基本语法</h2>
+<ol>
+<li>格式：</li>
+</ol>
+<pre><code>         选择器{
+             属性名1：属性值1；
+             属性名2：属性值2；
+             · · · · · ·
+         }
+</code></pre>
+<ol start="2">
+<li>选择器：筛选具有相似特征的元素</li>
+<li>注意：每一对属性需要用；隔开，最后一堆属性可以不加；</li>
+</ol>
+</li>
+</ul>
+<h2 id="选择器">选择器</h2>
+<ul>
+<li>概念：筛选具有相似特征的元素</li>
+<li>分类
+<ul>
+<li>基础选择器
+<ul>
+<li>id选择器：选择器具体的id属性值的元素，建议在一个html页面中id值唯一
+<ul>
+<li>语法：#id属性值{}(优先级最高)</li>
+</ul>
+</li>
+<li>元素选择器：选择具有相同标签名称的元素
+<ul>
+<li>语法：标签名称{}</li>
+<li>注意：id选择器优先级高于元素选择器</li>
+</ul>
+</li>
+<li>类选择器：选择具有相同class属性值的元素
+<ul>
+<li>语法：.classs属性值{}</li>
+<li>注意：类选择器优先级高于元素选择器</li>
+<li><strong>[p class=&quot;cls1&quot;]blah[/p]</strong></li>
+</ul>
+</li>
+<li>#id{} <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span></span></span></span> .class<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span></span></span></span>标签名称</li>
+</ul>
+</li>
+<li>扩展选择器：
+<ul>
+<li>选择所有元素：
+<ul>
+<li>语法：*{}</li>
+</ul>
+</li>
+<li>并集选择器：
+<ul>
+<li>选择器1，选择器2{}</li>
+</ul>
+</li>
+<li>子选择器：筛选选择器1内的选择器2
+<ul>
+<li>语法：选择器1 选择器2{}</li>
+</ul>
+</li>
+<li>父选择器：筛选选择器2的父选择器1
+<ul>
+<li>语法：选择器1 &gt; 选择器2{}</li>
+</ul>
+</li>
+<li>属性选择器：选择元素名称，属性名=属性值的元素
+<ul>
+<li>语法： 元素名称【属性名=&quot;属性值&quot;】{}</li>
+<li><strong>input[type=&quot;text&quot;]{}</strong></li>
+</ul>
+</li>
+<li>伪类选择器：选择一些元素具有的状态
+<ul>
+<li>语法：元素：状态{}</li>
+<li>如：<a>
+<ul>
+<li>状态：
+<ul>
+<li>link：初始化的状态 <strong>a：link{color:pink}</strong></li>
+<li>visited：被访问过的状态</li>
+<li>active：正在被访问的状态</li>
+<li>hover：鼠标悬浮的状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="属性">属性</h2>
+<ol>
+<li>字体、文本
+<ul>
+<li>font-size:字体大小</li>
+<li>color：颜色</li>
+<li>text-align：对齐方式</li>
+<li>line-height：行高</li>
+</ul>
+</li>
+<li>背景
+<ul>
+<li>background</li>
+</ul>
+</li>
+<li>边框
+<ul>
+<li>border：边框（复合属性）</li>
+</ul>
+</li>
+<li>尺寸
+<ul>
+<li>width</li>
+<li>height</li>
+</ul>
+</li>
+<li>盒子尺寸
+<ul>
+<li>margin:外边距</li>
+<li>padding：内边距
+<ul>
+<li>默认情况下内边距会影响整个盒子的大小</li>
+<li>box-sizing：border-box；设置盒子的大小，让width和height就是盒子的最终大小</li>
+<li>float：浮动</li>
+<li>left</li>
+<li>right</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>div{
+    border: 1px solid red;
+    height: 200px;
+    width: 200px;
+    background: url(&quot;img/logo.jpg&quot;) no-repeat center;
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[html表单标签简介]]></title>
+        <id>https://Ciaory.github.io/post/html-biao-dan-biao-qian-jian-jie/</id>
+        <link href="https://Ciaory.github.io/post/html-biao-dan-biao-qian-jian-jie/">
+        </link>
+        <updated>2022-09-14T05:38:37.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="表单">表单</h2>
+<ul>
+<li>概念：用于采集用户输入的数据，用于和服务器进行交互</li>
+<li>使用的标签：form</li>
+<li>可以定义一个范围，范围代表采集用户数据采集的范围</li>
+</ul>
+<h2 id="属性">属性</h2>
+<ul>
+<li>action: 指定提交数据的URL<code>&lt;form action=&quot;#&quot; &gt;</code></li>
+<li>method:指定提交方式
+<ul>
+<li>分类：一共7种，2种比较常用
+<ul>
+<li>get：
+<ul>
+<li>请求参数会在地址栏中显示</li>
+<li>请求参数的大小有限制</li>
+<li>不太安全</li>
+</ul>
+</li>
+<li>post：
+<ul>
+<li>请求参数不会在地址栏中显示，会封装在请求体中（HTTP协议）</li>
+<li>请求参数大小没有限制</li>
+<li>较为安全</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>表单项中的数据项要被提交：必须<strong>指定其name属性</strong><pre><code>&lt;form action=&quot;#&quot; method=&quot;get&quot;&gt; 
+          &lt;label for=&quot;username&quot;&gt;用户名 &lt;/label&gt;  &lt;input name = &quot;username&quot; placeholder=&quot;请输入用户名&quot; id=&quot;username&quot;&gt;&lt;br&gt;
+          密码&lt;input name=&quot;password&quot;&gt;&lt;br&gt;
+          &lt;input type = &quot;submit&quot; value=&quot;登录&quot;&gt;
+&lt;/form&gt;
+</code></pre>
+<h2 id="表单项标签">表单项标签</h2>
+<ul>
+<li>input：可以通过type属性值，改变元素展示的样式</li>
+<li>select：下拉列表</li>
+<li>textarea：文本域</li>
+</ul>
+<h3 id="input">input</h3>
+<ul>
+<li>type属性：
+<ul>
+<li>text：文本输入框（default）</li>
+<li>password：密码框</li>
+<li>radio：单选框
+<ol>
+<li>注意：要想多个单选框实现单选的效果，则多个单选框的name的属性值必须一样</li>
+<li>一般会给每一个单选框value属性，指定其被选中后提交的值</li>
+<li>checked 属性，可以指定默认值</li>
+<li>placeholder 属性，指定输入框的提示信息，当输入输入内容发生变化，提示消失</li>
+</ol>
+<pre><code>&lt;!-- &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;male&quot;&gt; 男 --&gt;
+&lt;!-- &lt;input type=&quot;radio&quot; name=&quot;gender&quot; value=&quot;female&quot;&gt; 女 --&gt;
+</code></pre>
+</li>
+<li>checkbox：复选框
+<ol>
+<li>一般会给每一个单选框value属性，指定其被选中后提交的值</li>
+<li>checked 属性，可以指定默认值</li>
+</ol>
+</li>
+<li>file ： 文件选择框</li>
+<li>hidden：隐藏域，用于提交一些信息<code>&lt;input type=&quot;hidden&quot; name=&quot;file&quot; value=&quot;aaa&quot;&gt;&lt;br&gt;</code></li>
+<li>按钮：
+<ul>
+<li>submit：提交表单</li>
+<li>button：普通按钮</li>
+<li>img 图片提交按钮
+<ul>
+<li>src 属性指定图片资源</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>label：指定输入项的文字描述信息<br>
+* 注意：<br>
+* label 的 for 属性一般会和 input 的 id 属性值对应。如果对应了，则点击label 区域网， 会让label 输入框获取焦点</li>
+</ul>
+<h3 id="select下拉列表">select：下拉列表</h3>
+<ul>
+<li>子元素：option，指定列表项</li>
+</ul>
+<pre><code> &lt;select name=&quot;province&quot;&gt;
+     &lt;caption value=&quot;1&quot;&gt;shanghai&lt;/caption&gt;
+     &lt;caption value=&quot;2&quot; selected&gt;beijing&lt;/caption&gt;
+ &lt;/select&gt;
+ &lt;!-- 添加 name 属性用于提交 form --&gt;
+</code></pre>
+<p>###textarea：文本域</p>
+<ul>
+<li>cols ：指定列数</li>
+<li>rows：指定行数</li>
+<li>示例： <code>&lt;textarea cols=&quot;5&quot; rows=&quot;20&quot;&gt;&lt;/textarea&gt;</code></li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[前端概念介绍]]></title>
+        <id>https://Ciaory.github.io/post/qian-duan-gai-nian-jie-shao/</id>
+        <link href="https://Ciaory.github.io/post/qian-duan-gai-nian-jie-shao/">
+        </link>
+        <updated>2022-09-13T08:25:14.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="web概念介绍">web概念介绍</h1>
+<ul>
+<li>
+<p>JavaWeb</p>
+<ul>
+<li>使用Java语言开发基于互联网的项目</li>
+</ul>
+</li>
+<li>
+<p>软件架构</p>
+<ol>
+<li>C/S：Client/Server 客户端/服务器端
+<ul>
+<li>在用户本地有一个客户端程序，远程有一个服务器端程序</li>
+<li>如：QQ、迅雷</li>
+<li>优点：用户体验好</li>
+<li>缺点：开发、安装、部署、维护 麻烦</li>
+</ul>
+</li>
+<li>B/S:   Brower/Server 浏览器/服务器端
+<ul>
+<li>只需要一个浏览器，用户通过URL来访问不同服务器端程序</li>
+<li>优点：开发、安装、部署、维护 麻烦</li>
+<li>缺点：<br>
+1. 若应用过大、用户体验收到影响<br>
+2. 对硬件要求高</li>
+</ul>
+</li>
+</ol>
+<h1 id="bs架构详解">B/S架构详解</h1>
+<ul>
+<li>资源分类</li>
+</ul>
+<ol>
+<li>静态资源：
+<ul>
+<li>使用静态网页开发技术发布的资源</li>
+<li>特点：
+<ul>
+<li>所有用户访问得到的结果是相同的</li>
+<li>如：文本，图片、音频、视频，html，CSS，JavaScript</li>
+<li>如果用户请求的是静态资源，娜美服务器会直接将静态资源发送给浏览器。浏览器中内置了静态资源的解析引擎，可以展示静态资源</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>动态资源
+<ul>
+<li>使用动态网页及时发布的资源</li>
+<li>特点：
+<ul>
+<li>所有用户访问，结果可能不一样</li>
+<li>如：jsp/servlet，php，asp...</li>
+<li>如果用户请求的是动态资源，服务器会执行动态资源，转换为静态资源，再发送给浏览器。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="静态资源">静态资源：</h2>
+<pre><code>  * html：用于搭建基础页面，展示页面内容
+  * CSS：用于美化页面，布局页面
+  * Javascript：控制页面的元素，让页面有一些动态的效果
+</code></pre>
+</li>
+</ul>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[html基础语法]]></title>
+        <id>https://Ciaory.github.io/post/html-yu-fa/</id>
+        <link href="https://Ciaory.github.io/post/html-yu-fa/">
+        </link>
+        <updated>2022-09-13T04:41:10.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="概念">概念</h2>
+<ul>
+<li>超文本标记语言
+<ul>
+<li>超文本
+<ul>
+<li>超文本是用超链接的方法，将各种不同空间的文字信息组织在一起的网状文本</li>
+</ul>
+</li>
+<li>标记语言
+<ul>
+<li>标记语言不是编程语言</li>
+<li>由标签构成的语言。&lt;标签名称&gt;如 html，xml</li>
+</ul>
+</li>
+</ul>
+<h2 id="语法">语法</h2>
+<ul>
+<li>html文档后缀名.html 或者 .htm</li>
+<li>标签分为
+<ol>
+<li>围堵标签：有开始标签和结束标签。如<html></html></li>
+<li>自闭合标签：<br/></li>
+</ol>
+</li>
+<li>在开始标签中可以定义属性。属性是由键值对构成，值需要引号（单双皆可）引起来</li>
+<li>html不区分大小写，但推荐小写。</li>
+</ul>
+<h2 id="标签">标签</h2>
+</li>
+</ul>
+<h3 id="1-文件标签构成html最基本的标签">1. 文件标签：构成html最基本的标签</h3>
+<pre><code>    * html：html的根标签
+    * head：头标签，引入资源
+    * title：标题标签
+    * body： 体标签
+</code></pre>
+<h3 id="2-文本标签和文本有关的标签">2. 文本标签：和文本有关的标签</h3>
+<pre><code>    * 注释`&lt;!--blah--&gt;`
+    * h1 to h6 标题
+    * p 段落
+    * br 换行
+    * hr 水平线
+        * 属性
+            * color
+            * width
+            * size
+            * align
+                * center
+                * left
+                * right
+    * b 加粗
+    * i 斜体
+    * font 字体（html5已淘汰）
+        * 属性
+            * color 颜色
+                1. 英文单词：red，green，blue
+                2. rgb(a,b,c) 
+                3. #abc: $a,b,c \in 0x00 to 0xFF$
+            * size 大小
+            * face 字体
+            * width:
+                * 数值：width=‘20’，数值单位默认是px（像素）
+                * 数值%：占比相对于父元素的大小
+</code></pre>
+<h3 id="3-图片标签">3. 图片标签：</h3>
+<pre><code>&lt;img src = &quot;image/jingxuan_2.jpg&quot; align = &quot;right&quot; alt = &quot;alternative&quot; /&gt;
+</code></pre>
+<ul>
+<li>src: 指定图片位置
+<ul>
+<li>以.开头的路径
+<ul>
+<li>./: 表示当前目录</li>
+<li>../: 表示上一级目录</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-列表标签">4. 列表标签：</h3>
+<pre><code>1. ol+li
+2. ul+li
+</code></pre>
+<h3 id="5-连接标签">5. 连接标签：</h3>
+<pre><code>1. a: 定义一个超链接
+    1. 属性：
+        1. href：制定访问资源的URL
+        2. target：制定打开资源的方式
+            1. _self:默认值,在当前页面打开
+            2. _blank:在空白页面打开
+</code></pre>
+<h3 id="6-div和span">6. div和span：</h3>
+<ul>
+<li>span：文本信息在一行内展示，行内标签 内联标签</li>
+<li>div：每个div占满一整行。块级标签</li>
+</ul>
+<h3 id="7-语义化标签-为了提高程序可读性提供了一些标签自身没有任何形式结合css">7. 语义化标签： 为了提高程序可读性，提供了一些标签（自身没有任何形式,结合CSS）</h3>
+<pre><code>1. header
+2. footer 
+</code></pre>
+<h3 id="8-表格标签">8. 表格标签：</h3>
+<pre><code>* table: 定义表格
+    * width： 宽度
+    * border：边框
+    * cellpadding：定义内容和单元格之间的距离
+    * cellspacing: 定义单元格之间的距离。若指定为0，则边框合为一条线
+    * align： 对齐方式
+* tr：行
+* td：列
+    * colspan: 合并列 `&lt;th rowspan=&quot;2&quot;&gt;`
+    * rowspan: 合并行
+* th：表头单元格
+* caption: 标题 
+* thead: 表示表格的头部分
+* tbody: 表示表格的体部分
+* tfoot: 表示表格的尾部分
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Java EE发展与组成]]></title>
+        <id>https://Ciaory.github.io/post/java-ee-fa-zhan-yu-zu-cheng/</id>
+        <link href="https://Ciaory.github.io/post/java-ee-fa-zhan-yu-zu-cheng/">
+        </link>
+        <updated>2022-09-06T01:35:08.000Z</updated>
+        <content type="html"><![CDATA[<!-- more -->
+<h1 id="什么是java-ee">什么是Java EE</h1>
+<ul>
+<li>Java Enterprise Edition是基于Java SE基础构建的， 用来实现企业级和web应用程序的开发。</li>
+<li>JavaEE是一套企业级Web应用开发的工业标准，也是一种平台，提供了基于组件的方法，加快设计、开发和部署企业应用程序。</li>
+<li>JavaEE不是编程语言，而是一系列的技术规范和实现。</li>
+<li>程序员根据应用需求编写组件，专注于业务逻辑，不必关注复杂的企业应用环境。</li>
+</ul>
+<h1 id="java-ee的构成">Java EE的构成</h1>
+<p>JavaEE分为三层：表示层（web前端技术）、中间层（服务器端技术）、数据层（数据库和JDBC技术）<br>
+<img src="https://Ciaory.github.io/post-images/1663032048396.png" alt="" loading="lazy"></p>
+<ul>
+<li>web前端技术
+<ul>
+<li>HTML</li>
+<li>HTML5</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>JQuery</li>
+<li>Framework（Vue、React、Angular）</li>
+</ul>
+</li>
+<li>服务器端技术
+<ul>
+<li>JavaWeb程序结构</li>
+<li>Servlet</li>
+<li>Java Bean/EJB</li>
+<li>JSP</li>
+<li>MVC</li>
+<li>Service</li>
+</ul>
+</li>
+<li>数据库和JDBC技术
+<ul>
+<li>MySql数据库</li>
+<li>JDBC</li>
+<li>Framework （ SSH、Spring、MVC）</li>
+</ul>
+</li>
+</ul>
+<h1 id="javaee架构">JavaEE架构</h1>
+<ul>
+<li>用户界面部分：表示层</li>
+<li>应用逻辑部分：业务逻辑层</li>
+<li>数据访问部分：数据访问层</li>
+</ul>
+<h2 id="特点">特点</h2>
+<ul>
+<li>面向web体系</li>
+<li><strong>高性能</strong>：计算被集中到了服务器</li>
+<li><strong>易维护</strong>： 每一层间相对独立，易于并行开发</li>
+<li>提高了<strong>安全性</strong>、<strong>可扩展性</strong>、<strong>可伸缩性</strong></li>
+<li>具有 <strong>可移植性</strong></li>
+</ul>
+]]></content>
+    </entry>
+</feed>

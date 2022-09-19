@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Java EE发展与组成 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="
+什么是Java EE
+
+Java Enterprise Edition是基于Java SE基础构建的， 用来实现企业级和web应用程序的开发。
+JavaEE是一套企业级Web应用开发的工业标准，也是一种平台，提供了基于组件的方法，加快设计..." />
+    <meta name="keywords" content="Java EE" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Java EE发展与组成</h2>
+            <div class="post-date">2022-09-06</div>
+            
+            <div class="post-content" v-pre>
+              <!-- more -->
+<h1 id="什么是java-ee">什么是Java EE</h1>
+<ul>
+<li>Java Enterprise Edition是基于Java SE基础构建的， 用来实现企业级和web应用程序的开发。</li>
+<li>JavaEE是一套企业级Web应用开发的工业标准，也是一种平台，提供了基于组件的方法，加快设计、开发和部署企业应用程序。</li>
+<li>JavaEE不是编程语言，而是一系列的技术规范和实现。</li>
+<li>程序员根据应用需求编写组件，专注于业务逻辑，不必关注复杂的企业应用环境。</li>
+</ul>
+<h1 id="java-ee的构成">Java EE的构成</h1>
+<p>JavaEE分为三层：表示层（web前端技术）、中间层（服务器端技术）、数据层（数据库和JDBC技术）<br>
+<img src="https://Ciaory.github.io/post-images/1663032048396.png" alt="" loading="lazy"></p>
+<ul>
+<li>web前端技术
+<ul>
+<li>HTML</li>
+<li>HTML5</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>JQuery</li>
+<li>Framework（Vue、React、Angular）</li>
+</ul>
+</li>
+<li>服务器端技术
+<ul>
+<li>JavaWeb程序结构</li>
+<li>Servlet</li>
+<li>Java Bean/EJB</li>
+<li>JSP</li>
+<li>MVC</li>
+<li>Service</li>
+</ul>
+</li>
+<li>数据库和JDBC技术
+<ul>
+<li>MySql数据库</li>
+<li>JDBC</li>
+<li>Framework （ SSH、Spring、MVC）</li>
+</ul>
+</li>
+</ul>
+<h1 id="javaee架构">JavaEE架构</h1>
+<ul>
+<li>用户界面部分：表示层</li>
+<li>应用逻辑部分：业务逻辑层</li>
+<li>数据访问部分：数据访问层</li>
+</ul>
+<h2 id="特点">特点</h2>
+<ul>
+<li>面向web体系</li>
+<li><strong>高性能</strong>：计算被集中到了服务器</li>
+<li><strong>易维护</strong>： 每一层间相对独立，易于并行开发</li>
+<li>提高了<strong>安全性</strong>、<strong>可扩展性</strong>、<strong>可伸缩性</strong></li>
+<li>具有 <strong>可移植性</strong></li>
+</ul>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://Ciaory.github.io/tag/07ruRnePR/" class="tag">
+                    Java EE
+                  </a>
+                
+              </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>

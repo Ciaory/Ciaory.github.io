@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>CSS入门 | Ciaory&#39;s blog</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://Ciaory.github.io/favicon.ico?v=1663582429128">
+<link rel="stylesheet" href="https://Ciaory.github.io/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="概念：Cascading Style Sheet 层叠样式表
+
+层叠：多个样式可以作用在同一个html的元素上，同时生效
+
+好处
+
+功能强大
+将内容展示和样式控制分离
+
+降低耦合度，解耦
+让分工协作更容易
+提高开发效率
+
+
+
+CSS 与 H..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://Ciaory.github.io">
+        <img src="https://Ciaory.github.io/images/avatar.png?v=1663582429128" class="site-logo">
+        <h1 class="site-title">Ciaory&#39;s blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://Ciaory.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">CSS入门</h2>
+            <div class="post-date">2022-09-15</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="概念cascading-style-sheet-层叠样式表">概念：Cascading Style Sheet 层叠样式表</h2>
+<ul>
+<li>层叠：多个样式可以作用在同一个html的元素上，同时生效</li>
+</ul>
+<h2 id="好处">好处</h2>
+<ol>
+<li>功能强大</li>
+<li>将内容展示和样式控制分离
+<ul>
+<li>降低耦合度，解耦</li>
+<li>让分工协作更容易</li>
+<li>提高开发效率</li>
+</ul>
+</li>
+</ol>
+<h2 id="css-与-html">CSS 与 HTML</h2>
+<ol>
+<li>内联样式
+<ul>
+<li>在标签内使用style属性指定css代码<br>
+* 如**[div style=&quot;color:red;&quot;]hello css[/div]**</li>
+</ul>
+</li>
+<li>内部样式
+<ul>
+<li>在head标签内定义style标签，style标签的标签体的内容就是css代码</li>
+<li>如：</li>
+</ul>
+</li>
+</ol>
+<pre><code>&lt;style&gt;
+          div{
+              color:blue;
+          }
+  &lt;style&gt;
+</code></pre>
+<ol start="3">
+<li>外部样式
+<ol>
+<li>定义css文件</li>
+<li>在<strong>head</strong>标签里定义<strong>link</strong>标签，引入外部资源</li>
+<li><strong>[link rel=&quot;stylesheet&quot; href=&quot;css/a.css&quot;]</strong></li>
+</ol>
+</li>
+</ol>
+<ul>
+<li>注意：
+<ul>
+<li>1,2,3种方式作用域越来越大</li>
+<li>1不常用，后期常用2,3</li>
+</ul>
+<h2 id="css基本语法">CSS基本语法</h2>
+<ol>
+<li>格式：</li>
+</ol>
+<pre><code>         选择器{
+             属性名1：属性值1；
+             属性名2：属性值2；
+             · · · · · ·
+         }
+</code></pre>
+<ol start="2">
+<li>选择器：筛选具有相似特征的元素</li>
+<li>注意：每一对属性需要用；隔开，最后一堆属性可以不加；</li>
+</ol>
+</li>
+</ul>
+<h2 id="选择器">选择器</h2>
+<ul>
+<li>概念：筛选具有相似特征的元素</li>
+<li>分类
+<ul>
+<li>基础选择器
+<ul>
+<li>id选择器：选择器具体的id属性值的元素，建议在一个html页面中id值唯一
+<ul>
+<li>语法：#id属性值{}(优先级最高)</li>
+</ul>
+</li>
+<li>元素选择器：选择具有相同标签名称的元素
+<ul>
+<li>语法：标签名称{}</li>
+<li>注意：id选择器优先级高于元素选择器</li>
+</ul>
+</li>
+<li>类选择器：选择具有相同class属性值的元素
+<ul>
+<li>语法：.classs属性值{}</li>
+<li>注意：类选择器优先级高于元素选择器</li>
+<li><strong>[p class=&quot;cls1&quot;]blah[/p]</strong></li>
+</ul>
+</li>
+<li>#id{} <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span></span></span></span> .class<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo>&gt;</mo></mrow><annotation encoding="application/x-tex">&gt;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mrel">&gt;</span></span></span></span>标签名称</li>
+</ul>
+</li>
+<li>扩展选择器：
+<ul>
+<li>选择所有元素：
+<ul>
+<li>语法：*{}</li>
+</ul>
+</li>
+<li>并集选择器：
+<ul>
+<li>选择器1，选择器2{}</li>
+</ul>
+</li>
+<li>子选择器：筛选选择器1内的选择器2
+<ul>
+<li>语法：选择器1 选择器2{}</li>
+</ul>
+</li>
+<li>父选择器：筛选选择器2的父选择器1
+<ul>
+<li>语法：选择器1 &gt; 选择器2{}</li>
+</ul>
+</li>
+<li>属性选择器：选择元素名称，属性名=属性值的元素
+<ul>
+<li>语法： 元素名称【属性名=&quot;属性值&quot;】{}</li>
+<li><strong>input[type=&quot;text&quot;]{}</strong></li>
+</ul>
+</li>
+<li>伪类选择器：选择一些元素具有的状态
+<ul>
+<li>语法：元素：状态{}</li>
+<li>如：<a>
+<ul>
+<li>状态：
+<ul>
+<li>link：初始化的状态 <strong>a：link{color:pink}</strong></li>
+<li>visited：被访问过的状态</li>
+<li>active：正在被访问的状态</li>
+<li>hover：鼠标悬浮的状态</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="属性">属性</h2>
+<ol>
+<li>字体、文本
+<ul>
+<li>font-size:字体大小</li>
+<li>color：颜色</li>
+<li>text-align：对齐方式</li>
+<li>line-height：行高</li>
+</ul>
+</li>
+<li>背景
+<ul>
+<li>background</li>
+</ul>
+</li>
+<li>边框
+<ul>
+<li>border：边框（复合属性）</li>
+</ul>
+</li>
+<li>尺寸
+<ul>
+<li>width</li>
+<li>height</li>
+</ul>
+</li>
+<li>盒子尺寸
+<ul>
+<li>margin:外边距</li>
+<li>padding：内边距
+<ul>
+<li>默认情况下内边距会影响整个盒子的大小</li>
+<li>box-sizing：border-box；设置盒子的大小，让width和height就是盒子的最终大小</li>
+<li>float：浮动</li>
+<li>left</li>
+<li>right</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<pre><code>div{
+    border: 1px solid red;
+    height: 200px;
+    width: 200px;
+    background: url(&quot;img/logo.jpg&quot;) no-repeat center;
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://Ciaory.github.io/post/html-biao-dan-biao-qian-jian-jie/">
+                  <h3 class="post-title">
+                    html表单标签简介
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
